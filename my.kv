@@ -1,0 +1,209 @@
+# Note:
+# name: name3; The ID is second (name3) while the variable referenced in code is first (name)
+
+<CreateAccountWindow>:
+    name: "create"
+
+    nameKV: name
+    emailKV: email
+    passwordKV: passw
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size:root.width, root.height/2
+            cols:2
+
+            Label:
+                text: "Create an Account"
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":0.1}
+                font_size: (root.width**2 + root.height**2)/ 14**4
+
+            Label:
+                text: "Name: "
+                size_hint: 0.5, 0.12
+                pos_hint: {"x":0, "top":0.8}
+                font_size: (root.width**2 + root.height**2)/14**4
+
+            TextInput:
+                id: name
+                size_hint: 0.4, 0.12
+                pos_hint: {"x":0.5, "top": 0.8}
+                font_size: (root.width**2 + root.height**2)/14**4
+                multiline: False
+
+            Label:
+                text: "Email: "
+                size_hint: 0.5,0.12
+                pos_hint:{"x":0, "top":0.8-0.13}
+                font_size: (root.width**2 + root.height**2)/14**4
+
+            TextInput:
+                id: email
+                size_hint:0.5,0.12
+                pos_hint:{"x":0.5, "top":0.8-0.13}
+                font_size: (root.width**2 + root.height**2)/14**4
+                multiline:False
+
+            Label:
+                text: "Password: "
+                size_hint: 0.5,0.12
+                pos_hint: {"x":0, "top":0.8-0.13*2}
+                font_size: (root.width**2 + root.height**2)/14**4
+
+            TextInput:
+                id: passw
+                size_hint: 0.4,0.12
+                pos_hint: {"x":0.5, "top":0.8-0.13*2}
+                font_size:(root.width**2 + root.height**2)/14**4
+                multiline:False
+                password:True
+
+        Button:
+            text: "Already Have an Account? Log In!"
+            size_hint: 0.4, 0.1
+            pos_hint: {"x":0.3, "y":0.25}
+            font_size: (root.width**2 + root.height**2)/17**4
+            on_release:
+                root.manager.transition.direction = "left"
+                root.login()
+
+        Button:
+            text: "Submit"
+            size_hint: 0.6, 0.15
+            pos_hint: {"x":0.2, "y":0.05}
+            font_size: (root.width**2 + root.height**2)/14**4
+            on_release:
+                root.manager.transition.direction = "left"
+                root.submit()
+
+
+<LoginWindow>:
+    name: "login"
+
+    emailKV: email
+    passwordKV: passw
+
+    FloatLayout:
+
+        Label:
+            text: "Email: "
+            size_hint: 0.35, 0.15
+            pos_hint: {"x": 0.1, "top":0.9}
+            font_size: (root.width**2 + root.height**2) / 13**4
+
+        TextInput:
+            id: email
+            size_hint: 0.4, 0.15
+            pos_hint: {"x": 0.45 , "top":0.9}
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+
+        Label:
+            text: "Password: "
+            size_hint: 0.35, 0.15
+            pos_hint: {"x":0.1, "top":0.7}
+            font_size: (root.width**2 + root.height**2) / 13**4
+
+        TextInput:
+            id: passw
+            size_hint: 0.4, 0.15
+            pos_hint: {"x": 0.45, "top":0.7}
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline:False
+            password:True
+
+        Button:
+            text: "Login"
+            size_hint: 0.6, 0.2
+            pos_hint:{"x":0.2,"y":0.05}
+            font_size: (root.width**2 + root.height**2) / 13**4
+            on_release:
+                root.manager.transition.direction = "up"
+                root.loginBtn()
+
+        Button:
+            text: "Don't Have an Account? Create One!"
+            size_hint: 0.4, 0.1
+            pos_hint: {"x":0.3,"y":0.3}
+            font_size: (root.width**2 + root.height**2) / 17**4
+            on_release:
+                root.manager.transition.direction = "right"
+                root.createBtn()
+
+
+
+
+<MainWindow>:
+    name: "main"
+
+    nameKV: name
+    emailKV: email
+    createdKV: created
+
+    FloatLayout:
+
+        Label:
+            id: name
+            text: "Account Name: "
+            size_hint:0.8,0.16
+            pos_hint:{"x":0.1, "top":0.9}
+
+        Label:
+            id: email
+            text: "Email: "
+            size_hint: 0.8, 0.2
+            pos_hint:{"x":0.1, "top": 0.9-(0.16*1)}
+
+        Label:
+            id: created
+            text: "Created: "
+            size_hint: 0.8, 0.2
+            pos_hint: {"x": 0.1, "top":0.9-(0.16*2)}
+
+        Button:
+            text: "Add Plank"
+            size_hint: 0.4, 0.09
+            pos_hint: {"x":.3, "top":0.9-(0.16*3)}
+            on_release:
+                app.root.current = "plank"
+                root.manager.transition.direction = "right"
+
+        Button:
+            text: "Log Out"
+            size_hint: 0.4, 0.09
+            pos_hint: {"x": 0.3, "top":0.9-(0.16*4)}
+            on_release:
+                app.root.current = "login"
+                root.manager.transition.direction = "down"
+
+
+
+<EnterPlankWindow>
+    name: "plank"
+
+    nameKV: namee
+
+    FloatLayout:
+
+        Label:
+            text: "Enter plank page coming soon!"
+            size_hint:0.8, 0.4
+            pos_hint: {"x":0.1, "top":0.9}
+
+        Label:
+            id: namee
+            text: "Account Name: "
+            size_hint: 0.8, 0.2
+            pos_hint: {"x":0.1, "top":0.5}
+
+
+        Button:
+            text: "Log Out"
+            size_hint: 0.6, 0.2
+            pos_hint: {"x":0.2, "top":0.3}
+            on_release:
+                app.root.current = "login"
+                root.manager.transition.direction = "left"
