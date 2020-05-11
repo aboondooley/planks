@@ -82,9 +82,9 @@ class EnterPlankWindow(Screen):
     def logOut(self):
         sm.current = "login"
 
-    def on_enter(self):
-        #password, name, created = db.get_user(self.current)
-        self.nameKV.text = "Account Name: " + self.current
+    def on_enter(self, *args):
+        password, name, created = db.get_user(self.current)
+        self.nameKV.text = "Account Name: " + name
 
 
 

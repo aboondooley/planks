@@ -1,29 +1,68 @@
 import datetime
+import mysql.connector
 
 
 class DataBase:
 
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, host, user_name, password, db):
+        self.host = host
+        self.user_name = user_name
+        self.password = password
+        self.db = db
+        self.cursor = None
+        #self.user = None
         self.users = None
-        self.file = None
+        self.plank_types = None
+        self.plank_log = None
         self.load()
 
-    def load(self):
-        self.file = open(self.filename, "r")
-        self.users = {}
+    def load(self, host, user_name, password, db):
+        self.db = mysql.connector.connect(
+            host="alieboonvm.lan",
+            user="admin",
+            passwd="plankdb",
+            database="plankdb"
+        )
 
-        for line in self.file:
-            email, password, name, created = line.strip().split(";")
-            self.users[email] = (password, name, created)
+        self.cursor = self.db.cursor()
 
-        self.file.close()
+    # def get_all_users(self):
+    #     query = "SELECT * FROM users;"
+    #
+    #     for line in self.file:
+    #         email, password, name, created = line.strip().split(";")
+    #         self.users[email] = (password, name, created)
 
+# THIS FUNCTION CHECKS THAT THE USER IS IN THE DATABASE BEFORE QUERYING FOR THE USER AND RETURNS -1 OTHERWISE
+    def check_user(self, email):
+        query = "SELECT email FROM users;"
+        self.cursor.execute(query)
+        self.users = self.cursor.fetchall()
+
+        exists = None
+        for user in self.users:
+            if user == email:
+                exists = user
+            else:
+                exists = False
+        return exists
+
+# THIS FUNCTION QUERIES THE DATABASE FOR THE INFORMATION ON THE USER IF THEY ARE PRESENT AND RETURNS -1 OTHERWISE
     def get_user(self, email):
         if email in self.users:
             return self.users[email]
         else:
-            return -1
+            query = "SELECT * FROM users WHERE email = %s;"
+            exists = self.check_user(self, email)
+            if exists != -1:
+                self.cursor.execute(query, exists)
+                id, email, first_name, last_name, age, sex, date_joined = self.cursor.fetchone()
+                self.users[email] = (id, first_name, last_name, age, sex, date_joined)
+                return self.users[email]
+            else:
+                return -1
+# WE NEED THIS INFORMATION BECAUSE WE NEED TO DISPLAY IT TO THE USER AND ALSO ADD IT TO A QUERY WHERE WE WILL ENTER
+# PLANK INFORMATION FOR THIS PARTICULAR USER INTO THE DATABASE
 
     def add_user(self, email, password, name):
         if email.strip() not in self.users:
