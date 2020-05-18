@@ -69,10 +69,14 @@ class MainWindow(Screen):
         sm.current = "login"
 
     def on_enter(self, *args):
-        password, name, created = db.get_user(self.current)
-        self.nameKV.text = "Account Name: " + name
+        db_id, user_name, first_name, last_name, age, sex, date_joined = db.get_user(self.current)
+        self.nameKV.text = "Account Name: " + first_name + " " + last_name
         self.emailKV.text = "Email: " + self.current
-        self.createdKV.text = "Created On: " + created
+        self.createdKV.text = "Created On: " + date_joined.strftime("%m/%d/%Y")
+
+    def addPlankBtn(self):
+        EnterPlankWindow.current = self.emailKV.text
+        sm.current = "plank"
 
 
 class EnterPlankWindow(Screen):
@@ -83,9 +87,8 @@ class EnterPlankWindow(Screen):
         sm.current = "login"
 
     def on_enter(self, *args):
-        password, name, created = db.get_user(self.current)
-        self.nameKV.text = "Account Name: " + name
-
+        db_id, user_name, first_name, last_name, age, sex, date_joined = db.get_user(self.current)
+        self.nameKV.text = "Account Name: " + first_name + " " + last_name
 
 
 class WindowManager(ScreenManager):
@@ -111,7 +114,7 @@ def invalidForm():
 kv = Builder.load_file("my.kv")
 
 sm = WindowManager()
-db = DataBase("users.txt")
+db = DataBase(host="alieboonvm.lan", user_name="admin", password="plankdb", db="plankdb")
 
 screens = [LoginWindow(name="login"), CreateAccountWindow(name="create"), MainWindow(name="main"), EnterPlankWindow(name="plank")]
 
