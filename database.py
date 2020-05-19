@@ -35,7 +35,6 @@ class DataBase:
 
 # THIS FUNCTION CHECKS THAT THE USER IS IN THE DATABASE BEFORE QUERYING FOR THE USER AND RETURNS -1 OTHERWISE
     def check_user(self, email):
-        temp_users = None
         query = "SELECT email FROM users;"
         self.cursor.execute(query)
         temp_users = self.cursor.fetchall()
@@ -49,9 +48,9 @@ class DataBase:
     def get_user(self, email):
         # if email in self.users:
         #     return self.users[email]
-        # else:
+        #else:
         query = "SELECT * FROM users WHERE email = '{}';"
-        print(query)
+        #print(query)
         exists = self.check_user(email)
         if exists != -1:
             self.cursor.execute(query.format(email))

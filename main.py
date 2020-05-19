@@ -12,17 +12,22 @@ from database import DataBase
 
 
 class CreateAccountWindow(Screen):
-    nameKV = ObjectProperty(None)
+    firstNameKV = ObjectProperty(None)
+    lastNameKV = ObjectProperty(None)
+    sexKV = ObjectProperty(None)
+    ageKV = ObjectProperty(None)
     emailKV = ObjectProperty(None)
     passwordKV = ObjectProperty(None)
 
     def submit(self):
-        if self.nameKV.text != "" and self.emailKV.text != "" and self.emailKV.text.count("@") == 1 and self.emailKV.text.count(".")>0:
+        if self.firstNameKV.text != "" and self.lastNameKV.text != "" and self.emailKV.text != "" and self.emailKV.text.count("@") == 1 and self.emailKV.text.count(".")>0:
             if self.passwordKV.text != "":
-                db.add_user(self.emailKV.text, self.passwordKV.text, self.nameKV.text)
-
-                self.reset()
-                sm.current = "login"
+                result = db.add_user(self.emailKV.text, self.passwordKV.text, self.nameKV.text)
+                if result == -1:
+                    userExists()
+                else:
+                    self.reset()
+                    sm.current = "login"
             else:
                 invalidForm()
         else:
@@ -33,9 +38,12 @@ class CreateAccountWindow(Screen):
         sm.current = "login"
 
     def reset(self):
+        self.firstNameKV.text = ""
+        self.lastNameKV.text = ""
+        self.sexKV.text = ""
+        self.ageKV.text = ""
         self.emailKV.text = ""
         self.passwordKV.text = ""
-        self.nameKV.text = ""
 
 
 class LoginWindow(Screen):
@@ -68,15 +76,15 @@ class MainWindow(Screen):
     def logOut(self):
         sm.current = "login"
 
+    def addPlankBtn(self):
+        EnterPlankWindow.current = self.current
+        sm.current = "plank"
+
     def on_enter(self, *args):
         db_id, user_name, first_name, last_name, age, sex, date_joined = db.get_user(self.current)
         self.nameKV.text = "Account Name: " + first_name + " " + last_name
         self.emailKV.text = "Email: " + self.current
         self.createdKV.text = "Created On: " + date_joined.strftime("%m/%d/%Y")
-
-    def addPlankBtn(self):
-        EnterPlankWindow.current = self.emailKV.text
-        sm.current = "plank"
 
 
 class EnterPlankWindow(Screen):
@@ -94,6 +102,11 @@ class EnterPlankWindow(Screen):
 class WindowManager(ScreenManager):
     pass
 
+def userExists():
+    pop = Popup(title="Invalid New User",
+                content=Label(text="User already exists in the database. Please log in."),
+                size_hint=(None, None),
+                size=(400, 400))
 
 def invalidLogin():
     pop = Popup(title="Invalid Login",
@@ -123,6 +136,7 @@ for screen in screens:
 
 sm.current = "login"
 
+#row_nums = NumericProperty(0.1)
 
 class MyMainApp(App):
     def build(self):
