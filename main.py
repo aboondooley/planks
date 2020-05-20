@@ -1,6 +1,6 @@
 ## Notes:
 # name = ObjectPropery(None) # name needs to match what is on the left side in the kv file
-
+import datetime
 import kivy
 from kivy.app import App
 from kivy.lang import Builder
@@ -88,15 +88,25 @@ class MainWindow(Screen):
 
 
 class EnterPlankWindow(Screen):
-    nameKV = ObjectProperty(None)
+    dateKV = ObjectProperty(None)
+    durationKV = ObjectProperty(None)
     current = ""
+
+    def get_date(self):
+        return str(datetime.datetime.now()).split(" ")[0]
 
     def logOut(self):
         sm.current = "login"
 
-    def on_enter(self, *args):
-        db_id, user_name, first_name, last_name, age, sex, date_joined = db.get_user(self.current)
-        self.nameKV.text = "Account Name: " + first_name + " " + last_name
+    def on_enter(self):
+        self.dateKV.text = self.get_date()
+        self.durationKV.text = ""
+
+
+
+    # def on_enter(self, *args):
+    #     db_id, user_name, first_name, last_name, age, sex, date_joined = db.get_user(self.current)
+    #     self.nameKV.text = "Account Name: " + first_name + " " + last_name
 
 
 class WindowManager(ScreenManager):
@@ -122,6 +132,7 @@ def invalidForm():
                 size_hint=(None, None),
                 size=(400, 400))
     pop.open()
+
 
 
 kv = Builder.load_file("my.kv")

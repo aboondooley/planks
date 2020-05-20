@@ -60,6 +60,7 @@
                 font_size: (root.width**2 + root.height**2)/14**4
 
             TextInput:
+            # TODO create numeric input rather than text field?
                 id: age
                 size_hint: 0.5, row_nums
                 pos_hint: {"x":0.4, "top":top_pos-(row_nums*3)}
@@ -73,6 +74,7 @@
                 font_size: (root.width**2 + root.height**2)/14**4
 
             TextInput:
+            #TODO create buttons for male female ane other instead of text field
                 id: sex
                 size_hint:0.5, row_nums
                 pos_hint: {"x":0.4, "top":top_pos-(row_nums*4)}
@@ -230,21 +232,36 @@
 <EnterPlankWindow>:
     name: "plank"
 
-    nameKV: namee
+    dateKV: date
+    durationKV: duration
 
     FloatLayout:
 
         Label:
-            text: "Enter plank page coming soon!"
-            size_hint:0.8, 0.4
-            pos_hint: {"x":0.1, "top":0.9}
+            text: "Date: "
+            size_hint:0.2, 0.1
+            pos_hint: {"x":0, "top":0.9}
+            font_size: (root.width**2 + root.height**2)/14**4
+
+        TextInput:
+            id: date
+            size_hint: 0.3, 0.1
+            pos_hint: {"x":0.2, "top":0.9}
+            font_size: (root.width**2 + root.height**2)/14**4
+            multiline: False
 
         Label:
-            id: namee
-            text: "Account Name: "
-            size_hint: 0.8, 0.2
-            pos_hint: {"x":0.1, "top":0.5}
+            text: "Duration: "
+            size_hint: 0.2, 0.1
+            pos_hint: {"x":0.5, "top":0.9}
+            font_size: (root.width**2 + root.height**2)/14**4
 
+        TextInput:
+            id: duration
+            size_hint: 0.3, 0.1
+            pos_hint: {"x":0.7, "top":0.9}
+            font_size: (root.width**2 + root.height**2)/14**4
+            multiline:False
 
         Button:
             text: "Log Out"
