@@ -26,13 +26,6 @@ class DataBase:
 
         self.cursor = self.db.cursor()
 
-    # def get_all_users(self):
-    #     query = "SELECT * FROM users;"
-    #
-    #     for line in self.file:
-    #         email, password, name, created = line.strip().split(";")
-    #         self.users[email] = (password, name, created)
-
 # THIS FUNCTION CHECKS THAT THE USER IS IN THE DATABASE BEFORE QUERYING FOR THE USER AND RETURNS -1 OTHERWISE
     def check_user(self, email):
         query = "SELECT email FROM users;"
@@ -46,26 +39,27 @@ class DataBase:
 
 # THIS FUNCTION QUERIES THE DATABASE FOR THE INFORMATION ON THE USER IF THEY ARE PRESENT AND RETURNS -1 OTHERWISE
     def get_user(self, email):
-        # if email in self.users:
-        #     return self.users[email]
-        #else:
-        query = "SELECT * FROM users WHERE email = '{}';"
-        #print(query)
-        exists = self.check_user(email)
-        if exists != -1:
-            self.cursor.execute(query.format(email))
-            db_id, email, user_name, first_name, last_name, age, sex, date_joined = self.cursor.fetchone()
-            self.users[email] = (db_id, user_name, first_name, last_name, age, sex, date_joined)
+        if email.strip() in self.users:
             return self.users[email]
         else:
-            return -1
+            query = "SELECT * FROM users WHERE email = '{}';"
+            exists = self.check_user(email)
+            if exists != -1:
+                self.cursor.execute(query.format(email))
+                db_id, email, password, first_name, last_name, age, sex, date_joined = self.cursor.fetchone()
+                self.users[email] = (db_id, password, first_name, last_name, age, sex, date_joined)
+                return self.users[email]
+            else:
+                return -1
 # WE NEED THIS INFORMATION BECAUSE WE NEED TO DISPLAY IT TO THE USER AND ALSO ADD IT TO A QUERY WHERE WE WILL ENTER
 # PLANK INFORMATION FOR THIS PARTICULAR USER INTO THE DATABASE
 
-    def add_user(self, email, password, name):
-        if email.strip() not in self.users:
-            self.users[email.strip()] = (password.strip(), name.strip(), DataBase.get_date())
-            self.save()
+    def add_user(self, email, password, first_name, last_name, age, sex):
+        if self.check_user(email) == -1:
+            query = "INSERT INTO users (email, password, first_name, last_name, age, sex) " \
+                    "VALUES ('{}', '{}', '{}', '{}', '{}', '{}');"
+            self.cursor.execute(query.format(email, password, first_name, last_name, age, sex))
+            self.db.commit()
             return 1
         else:
             print("Email already exists.")
@@ -76,6 +70,8 @@ class DataBase:
             return self.users[email][1] == password
         else:
             return False
+
+
 
     def save(self):
         with open(self.filename, "w") as f:

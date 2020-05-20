@@ -22,7 +22,7 @@ class CreateAccountWindow(Screen):
     def submit(self):
         if self.firstNameKV.text != "" and self.lastNameKV.text != "" and self.emailKV.text != "" and self.emailKV.text.count("@") == 1 and self.emailKV.text.count(".")>0:
             if self.passwordKV.text != "":
-                result = db.add_user(self.emailKV.text, self.passwordKV.text, self.nameKV.text)
+                result = db.add_user(self.emailKV.text, self.passwordKV.text, self.firstNameKV.text, self.lastNameKV.text, self.ageKV.text, self.sexKV.text)
                 if result == -1:
                     userExists()
                 else:
@@ -103,8 +103,8 @@ class WindowManager(ScreenManager):
     pass
 
 def userExists():
-    pop = Popup(title="Invalid New User",
-                content=Label(text="User already exists in the database. Please log in."),
+    pop = Popup(title="Invalid New Email",
+                content=Label(text="User with this email already exists in the database. Please log in."),
                 size_hint=(None, None),
                 size=(400, 400))
 
