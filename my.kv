@@ -6,7 +6,9 @@
 
     firstNameKV: firstName
     lastNameKV: lastName
-    sexKV: sex
+    maleSexKV: female_sex
+    femaleSexKV: male_sex
+    otherSexKV: other_sex
     ageKV: age
     emailKV: email
     passwordKV: passw
@@ -73,13 +75,33 @@
                 pos_hint: {"x":0, "top":top_pos-(row_nums*4)}
                 font_size: (root.width**2 + root.height**2)/14**4
 
-            TextInput:
-            #TODO create buttons for male female ane other instead of text field
-                id: sex
-                size_hint:0.5, row_nums
-                pos_hint: {"x":0.4, "top":top_pos-(row_nums*4)}
+
+            ToggleButton:
+                id: male_sex
+                text: "Male"
+                group: 'sex_group'
+                state: 'normal'
+                size_hint: 0.5/3, row_nums
+                pos_hint: {"x": 0.4, "top": top_pos-(row_nums*4)}
                 font_size: (root.width**2 + root.height**2)/14**4
-                multiline: False
+
+            ToggleButton:
+                id: female_sex
+                text: "Female"
+                group: 'sex_group'
+                state: 'normal'
+                size_hint: 0.5/3, row_nums
+                pos_hint: {"x": 0.6, "top": top_pos-(row_nums*4)}
+                font_size: (root.width**2 + root.height**2)/14**4
+
+            ToggleButton:
+                id: other_sex
+                text: "Other"
+                group: 'sex_group'
+                state: 'normal'
+                size_hint: 0.5/3, row_nums
+                pos_hint: {"x": 0.8, "top": top_pos-(row_nums*4)}
+                font_size: (root.width**2 + root.height**2)/14**4
 
             Label:
                 text: "Email: "
@@ -225,7 +247,7 @@
             pos_hint: {"x": 0.3, "top":0.9-(0.16*4)}
             on_release:
                 app.root.current = "login"
-                root.manager.transition.direction = "down"
+                app.root.manager.transition.direction = "down"
 
 
 
@@ -233,40 +255,82 @@
     name: "plank"
 
     dateKV: date
-    durationKV: duration
+    durMinKV: duration_min
+    durSecKV: duration_sec
+    plankNameKV: plank_name
+
+    #:set date_height 0.1
+    #:set logout_height 0.1
 
     FloatLayout:
 
         Label:
             text: "Date: "
-            size_hint:0.2, 0.1
+            size_hint:0.2, date_height
             pos_hint: {"x":0, "top":0.9}
             font_size: (root.width**2 + root.height**2)/14**4
 
         TextInput:
             id: date
-            size_hint: 0.3, 0.1
+            size_hint: 0.4, date_height
             pos_hint: {"x":0.2, "top":0.9}
             font_size: (root.width**2 + root.height**2)/14**4
             multiline: False
 
         Label:
             text: "Duration: "
-            size_hint: 0.2, 0.1
-            pos_hint: {"x":0.5, "top":0.9}
+            size_hint: 0.2, date_height
+            pos_hint: {"x":0, "top":0.8}
             font_size: (root.width**2 + root.height**2)/14**4
 
         TextInput:
-            id: duration
-            size_hint: 0.3, 0.1
-            pos_hint: {"x":0.7, "top":0.9}
+            id: duration_min
+            size_hint: 0.2, date_height
+            pos_hint: {"x":0.2, "top":0.8}
             font_size: (root.width**2 + root.height**2)/14**4
             multiline:False
 
+        Label:
+            text: "minutes"
+            size_hint: 0.2, date_height
+            pos_hint: {"x":0.4, "top":0.8}
+            font_size: (root.width**2 + root.height**2)/14**4
+
+        TextInput:
+            id: duration_sec
+            size_hint: 0.2, date_height
+            pos_hint: {"x":0.6, "top": 0.8}
+            font_size: (root.width**2 + root.height**2)/14**4
+            multiline: False
+
+        Label:
+            text: "seconds"
+            size_hint: 0.2, date_height
+            pos_hint: {"x":0.8, "top":0.8}
+            font_size: (root.width**2 + root.height**2)/14**4
+
+        Spinner:
+            id: plank_name
+            text: "Plank Types"
+            values: root.plank_names
+            size_hint: 0.8, date_height
+            pos_hint: {"x":0.1, "top":0.7}
+            font_size: (root.width**2 + root.height**2)/14**4
+#            on_value:
+#                print: "The spinner {} has text {}".format(self, plank_type)
+
         Button:
-            text: "Log Out"
-            size_hint: 0.6, 0.2
+            text: "Submit Plank"
+            size_hint: 0.6, logout_height
             pos_hint: {"x":0.2, "top":0.3}
             on_release:
-                app.root.current = "login"
+                root.submit()
+
+
+        Button:
+            text: "Back to Main Page"
+            size_hint: 0.6, logout_height
+            pos_hint: {"x":0.2, "top":0.2}
+            on_release:
+                app.root.backMain()
                 root.manager.transition.direction = "left"

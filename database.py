@@ -28,6 +28,7 @@ class DataBase:
 
 # THIS FUNCTION CHECKS THAT THE USER IS IN THE DATABASE BEFORE QUERYING FOR THE USER AND RETURNS -1 OTHERWISE
     def check_user(self, email):
+        print("Sending check_user query.")
         query = "SELECT email FROM users;"
         self.cursor.execute(query)
         temp_users = self.cursor.fetchall()
@@ -40,8 +41,10 @@ class DataBase:
 # THIS FUNCTION QUERIES THE DATABASE FOR THE INFORMATION ON THE USER IF THEY ARE PRESENT AND RETURNS -1 OTHERWISE
     def get_user(self, email):
         if email.strip() in self.users:
+            print("Email found in self.users!")
             return self.users[email]
         else:
+            print("Sending get_user() query.")
             query = "SELECT * FROM users WHERE email = '{}';"
             exists = self.check_user(email)
             if exists != -1:
@@ -56,6 +59,7 @@ class DataBase:
 
     def add_user(self, email, password, first_name, last_name, age, sex):
         if self.check_user(email) == -1:
+            print("Sending add_user query.")
             query = "INSERT INTO users (email, password, first_name, last_name, age, sex) " \
                     "VALUES ('{}', '{}', '{}', '{}', '{}', '{}');"
             self.cursor.execute(query.format(email, password, first_name, last_name, age, sex))
@@ -66,21 +70,78 @@ class DataBase:
             return -1
 
     def validate(self, email, password):
+        print("In validate()")
         if self.get_user(email) != -1:
             return self.users[email][1] == password
         else:
             return False
 
+    def get_user_id(self, email):
+        print("In get_user_id()")
+        user = self.get_user(email)
+        if user != -1:
+            user_id, password, first_name, last_name, age, sex, date_joined = user
+            return user_id
+        else:
+            return -1
 
+    def get_all_plank_types(self):
+        print("Submitting plank_types query.")
+        query = "SELECT id, type FROM plank_types;"
+        self.cursor.execute(query)
+        self.plank_types = self.cursor.fetchall()
+        print("Now I can see the types!")
+        return self.plank_types
 
-    def save(self):
-        with open(self.filename, "w") as f:
-            for user in self.users:
-                f.write(user + ";" + self.users[user][0] + ";"  + self.users[user][1] + ";" + self.users[user][2] + "\n")
+    def get_all_plank_names(self):
+        print("In get_all_plank_names().")
+        self.get_all_plank_types()
+        plank_names = [str(t[1]) for t in self.plank_types]
+        return plank_names
+
+    def get_plank_id(self, plank_type):
+        print("In get_plank_id()")
+        print(plank_type)
+        for t in self.plank_types:
+            print(t[1])
+            if t[1] == plank_type:
+                return t[0]
+        return -1
+
+    def get_duration(self, minute, second):
+        try:
+            min = int(minute)
+        except ValueError:
+            min = "error"
+
+        try:
+            sec = int(second)
+        except ValueError:
+            sec = "error"
+
+        if sec == "error" or min == "error":
+            return -1
+        elif sec > 0 and min > 0:
+            return (min*60) + sec
+        elif sec == 0 and min > 0:
+            return min*60
+        elif min == 0 and sec > 0:
+            return sec
+        else:
+            return -2
+
+    def add_plank_instance(self, user_id, date, plank_id, duration, plank_type):
+        query = "INSERT INTO plank_log (user_id, date, plank_type_id, duration)" \
+               "VALUES ('{}', '{}', '{}', '{}')"
+        self.cursor.execute(query.format(user_id, date, plank_id, duration))
+        self.db.commit()
+        #self.plank_log[user_id].add(date, plank_type, duration)
+        #return self.plank_log[user_id]
 
 
     @staticmethod
     def get_date():
+        print("In get_date()")
         return str(datetime.datetime.now()).split(" ")[0]
 
 
