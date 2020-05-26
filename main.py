@@ -118,7 +118,7 @@ class EnterPlankWindow(Screen):
     def get_date(self):
         return str(datetime.datetime.now()).split(" ")[0]
 
-    def backMain(self):
+    def back_main(self):
         self.reset()
         sm.current = "main"
 

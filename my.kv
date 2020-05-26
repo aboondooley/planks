@@ -320,7 +320,7 @@
 #                print: "The spinner {} has text {}".format(self, plank_type)
 
         Button:
-            text: "Submit Plank"
+            text: "Submit"
             size_hint: 0.6, logout_height
             pos_hint: {"x":0.2, "top":0.3}
             on_release:
@@ -328,9 +328,9 @@
 
 
         Button:
-            text: "Back to Main Page"
+            text: "Main Page"
             size_hint: 0.6, logout_height
             pos_hint: {"x":0.2, "top":0.2}
             on_release:
-                app.root.backMain()
+                root.back_main()
                 root.manager.transition.direction = "left"
