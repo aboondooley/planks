@@ -246,8 +246,8 @@
             size_hint: 0.4, 0.09
             pos_hint: {"x": 0.3, "top":0.9-(0.16*4)}
             on_release:
-                app.root.current = "login"
-                app.root.manager.transition.direction = "down"
+                root.logOut()
+                root.manager.transition.direction = "down"
 
 
 

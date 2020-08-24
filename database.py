@@ -109,15 +109,21 @@ class DataBase:
         return -1
 
     def get_duration(self, minute, second):
-        try:
-            min = int(minute)
-        except ValueError:
-            min = "error"
+        if minute == '':
+            min = 0
+        else:
+            try:
+                min = int(minute)
+            except ValueError:
+                min = "error"
 
-        try:
-            sec = int(second)
-        except ValueError:
-            sec = "error"
+        if second == '':
+            sec = 0
+        else:
+            try:
+                sec = int(second)
+            except ValueError:
+                sec = "error"
 
         if sec == "error" or min == "error":
             return -1

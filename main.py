@@ -143,7 +143,7 @@ class EnterPlankWindow(Screen):
         elif duration == -2:
             invalidDurationNegative()
         elif self.plankNameKV.text == "":
-            print("self.plankNameKV.text == ''")
+            print("self.plankNameKV.text == ")
             print(self.plankNameKV.text)
             print(plank_id)
             print(user_id)
@@ -154,6 +154,7 @@ class EnterPlankWindow(Screen):
             print(duration)
             print(plank_id)
             print(user_id)
+            print("self.plankNameKV.text == ")
             print(self.plankNameKV.text)
             print(self.dateKV.text)
 
@@ -169,7 +170,7 @@ def invalidDurationNegative():
     pop = Popup(title="Invalid Duration Value",
                 content=Label(text="At least one of your duration values is negative or zero. Please try again."),
                 size_hint=(None, None),
-                size=(400,400))
+                size=(400, 400))
     pop.open()
 
 
@@ -178,7 +179,8 @@ def invalidDurationString():
     pop = Popup(title="Invalid Duration Value",
                 content=Label(text="At least one of your duration values is not a number. Please try again."),
                 size_hint=(None, None),
-                size=(400,400))
+                size=(400, 400))
+    pop.open()
 
 def userExists():
     pop = Popup(title="Invalid New Email",
