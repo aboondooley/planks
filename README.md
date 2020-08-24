@@ -1,2 +1,2 @@
 # planks
-A plank app to log my plank workouts.
+An app to log my plank workouts.
