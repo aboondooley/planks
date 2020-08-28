@@ -60,7 +60,9 @@ class CreateAccountWindow(Screen):
     def reset(self):
         self.firstNameKV.text = ""
         self.lastNameKV.text = ""
-        self.sexKV.text = ""
+        self.maleSexKV.state = "normal"
+        self.femaleSexKV.state = "normal"
+        self.otherSexKV.state = "normal"
         self.ageKV.text = ""
         self.emailKV.text = ""
         self.passwordKV.text = ""
@@ -135,28 +137,24 @@ class EnterPlankWindow(Screen):
         duration = db.get_duration(self.durMinKV.text, self.durSecKV.text)
         user_id = db.get_user_id(self.current)
         plank_id = db.get_plank_id(self.plankNameKV.text)
-        session = []
+        pop_dur = db.create_print_dur(self.durMinKV.text, self.durSecKV.text)
+        session = [] # what is this for? Is it to keep track of what has been submitted in this session?
+
+        # Submit plank information
         if duration > 0 and plank_id != -1 and self.dateKV.text != "":
             session = db.add_plank_instance(user_id, self.dateKV.text, plank_id, duration, self.plankNameKV.text)
         elif duration == -1:
             invalidDurationString()
         elif duration == -2:
             invalidDurationNegative()
-        elif self.plankNameKV.text == "":
-            print("self.plankNameKV.text == ")
-            print(self.plankNameKV.text)
-            print(plank_id)
-            print(user_id)
-            print(duration)
-            print(self.dateKV.text)
-        else:
-            print("In else statement")
-            print(duration)
-            print(plank_id)
-            print(user_id)
-            print("self.plankNameKV.text == ")
-            print(self.plankNameKV.text)
-            print(self.dateKV.text)
+        elif plank_id == -1:
+            invalid_plank_id()
+        else: # Date field is left plank
+            invalid_date_field()
+        # Pop up for submitted plank
+        if pop_dur != -1 and pop_dur != -2 and plank_id != -1 and self.dateKV.text != "":
+            plank_added_msg(self.dateKV.text, self.plankNameKV.text, pop_dur)
+
 
 
 
@@ -168,9 +166,10 @@ class WindowManager(ScreenManager):
 
 def invalidDurationNegative():
     pop = Popup(title="Invalid Duration Value",
-                content=Label(text="At least one of your duration values is negative or zero. Please try again."),
+                content=Label(text="At least one of your duration values is negative or both are zero. "
+                                   "Please try again."),
                 size_hint=(None, None),
-                size=(400, 400))
+                size=(600, 200))
     pop.open()
 
 
@@ -179,8 +178,9 @@ def invalidDurationString():
     pop = Popup(title="Invalid Duration Value",
                 content=Label(text="At least one of your duration values is not a number. Please try again."),
                 size_hint=(None, None),
-                size=(400, 400))
+                size=(500, 200))
     pop.open()
+
 
 def userExists():
     pop = Popup(title="Invalid New Email",
@@ -189,11 +189,12 @@ def userExists():
                 size=(400, 400))
     pop.open()
 
+
 def invalidLogin():
     pop = Popup(title="Invalid Login",
                 content=Label(text="Invalid username or password."),
                 size_hint=(None, None),
-                size=(400, 400))
+                size=(300, 200))
     pop.open()
 
 
@@ -201,7 +202,34 @@ def invalidForm():
     pop = Popup(title="Invalid Form",
                 content=Label(text="Please fill all inputs with valid information."),
                 size_hint=(None, None),
-                size=(400, 400))
+                size=(200, 400))
+    pop.open()
+
+
+def invalid_plank_id():
+    pop = Popup(title="Invalid Plank Id",
+                content=Label(text="The plank ID was not found. "
+                                   "Please enter a valid plank ID."),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
+
+def invalid_date_field():
+    pop = Popup(title= "Invalid Date Field",
+                content=Label(text="The data field is invalid or was left blank. "
+                                   "Please udpate and try again."),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
+
+def plank_added_msg(date, plank_type, duration):
+    body = "New Plank Added: \n {} \n {} \n {}"
+    pop = Popup(title="Success!",
+                content=Label(text=body.format(date, plank_type, duration)),
+                size_hint=(None, None),
+                size=(200, 200))
     pop.open()
 
 

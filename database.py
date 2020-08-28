@@ -133,8 +133,45 @@ class DataBase:
             return min*60
         elif min == 0 and sec > 0:
             return sec
-        else:
+        else: # Both minute and second are 0, or are negative
             return -2
+
+    def create_print_dur(self, minute, second):
+
+        if minute == '':
+            min = 0
+        else:
+            try:
+                min = int(minute)
+            except ValueError:
+                min = "error"
+
+        if second == '':
+            sec = 0
+        else:
+            try:
+                sec = int(second)
+            except ValueError:
+                sec = "error"
+
+        s = "seconds" if sec > 1 else "second"
+        m = "minutes" if min > 1 else "minute"
+
+        if sec == "error" or min == "error":
+            return -1
+        elif sec > 0 and min > 0:
+            phrase = "{} {} & {} {}"
+            return phrase.format(minute, m, second, s)
+        elif sec == 0 and min > 0:
+            phrase = "{} {}"
+            return phrase.format(minute, m)
+        elif min == 0 and sec > 0:
+            phrase = "{} {}"
+            return phrase.format(second, s)
+        else: # Both are equal to zero or are negative
+            return -2
+
+        
 
     def add_plank_instance(self, user_id, date, plank_id, duration, plank_type):
         query = "INSERT INTO plank_log (user_id, date, plank_type_id, duration)" \
