@@ -1,5 +1,6 @@
 import datetime
 import mysql.connector
+import re
 
 
 class DataBase:
@@ -108,7 +109,16 @@ class DataBase:
                 return t[0]
         return -1
 
-    def get_duration(self, minute, second):
+    def add_plank_instance(self, user_id, date, plank_id, duration, plank_type):
+        query = "INSERT INTO plank_log (user_id, date, plank_type_id, duration)" \
+               "VALUES ('{}', '{}', '{}', '{}')"
+        self.cursor.execute(query.format(user_id, date, plank_id, duration))
+        self.db.commit()
+        #self.plank_log[user_id].add(date, plank_type, duration)
+        #return self.plank_log[user_id]
+
+    @staticmethod
+    def get_duration(minute, second):
         if minute == '':
             min = 0
         else:
@@ -136,7 +146,8 @@ class DataBase:
         else: # Both minute and second are 0, or are negative
             return -2
 
-    def create_print_dur(self, minute, second):
+    @staticmethod
+    def create_print_dur(minute, second):
 
         if minute == '':
             min = 0
@@ -171,20 +182,26 @@ class DataBase:
         else: # Both are equal to zero or are negative
             return -2
 
-        
-
-    def add_plank_instance(self, user_id, date, plank_id, duration, plank_type):
-        query = "INSERT INTO plank_log (user_id, date, plank_type_id, duration)" \
-               "VALUES ('{}', '{}', '{}', '{}')"
-        self.cursor.execute(query.format(user_id, date, plank_id, duration))
-        self.db.commit()
-        #self.plank_log[user_id].add(date, plank_type, duration)
-        #return self.plank_log[user_id]
-
+    @staticmethod
+    def validate_date(date, current_date):
+        pattern = re.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}")
+        if not pattern.fullmatch(date): return -1
+        year = int(date.split("-")[0])
+        month = int(date.split("-")[1])
+        day = int(date.split("-")[2])
+        if year < 0 or month < 0 or day < 0: return -2
+        if month > 12: return -3
+        if day > 31: return -4 # TODO create fancier function to check number of days for specific months
+        if date > current_date: return -5
+        return 1
 
     @staticmethod
     def get_date():
         print("In get_date()")
         return str(datetime.datetime.now()).split(" ")[0]
 
+    @staticmethod
+    def get_year():
+        print("In get_year()")
+        return str(datetime.datetime.now()).split("-")[0]
 

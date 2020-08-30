@@ -75,6 +75,7 @@ class LoginWindow(Screen):
     def loginBtn(self):
         if db.validate(self.emailKV.text, self.passwordKV.text):
             MainWindow.current = self.emailKV.text
+            #self.validate_date()
             self.reset()
             sm.current = "main"
         else:
@@ -87,6 +88,7 @@ class LoginWindow(Screen):
     def reset(self):
         self.emailKV.text = ""
         self.passwordKV.text = ""
+
 
 
 class MainWindow(Screen):
@@ -117,8 +119,8 @@ class EnterPlankWindow(Screen):
     plankNameKV = ObjectProperty(None)
     current = ""
 
-    def get_date(self):
-        return str(datetime.datetime.now()).split(" ")[0]
+    #def get_date(self):
+    #    return str(datetime.datetime.now()).split(" ")[0]
 
     def back_main(self):
         self.reset()
@@ -129,7 +131,7 @@ class EnterPlankWindow(Screen):
         self.plank_names = db.get_all_plank_names()
 
     def reset(self):
-        self.dateKV.text = self.get_date()
+        self.dateKV.text = db.get_date()
         self.durMinKV.text = ""
         self.durSecKV.text = ""
 
@@ -138,10 +140,11 @@ class EnterPlankWindow(Screen):
         user_id = db.get_user_id(self.current)
         plank_id = db.get_plank_id(self.plankNameKV.text)
         pop_dur = db.create_print_dur(self.durMinKV.text, self.durSecKV.text)
+        date_check = db.validate_date(self.dateKV.text, db.get_date())
         session = [] # what is this for? Is it to keep track of what has been submitted in this session?
 
         # Submit plank information
-        if duration > 0 and plank_id != -1 and self.dateKV.text != "":
+        if duration > 0 and plank_id != -1 and date_check == 1:
             session = db.add_plank_instance(user_id, self.dateKV.text, plank_id, duration, self.plankNameKV.text)
         elif duration == -1:
             invalidDurationString()
@@ -149,15 +152,17 @@ class EnterPlankWindow(Screen):
             invalidDurationNegative()
         elif plank_id == -1:
             invalid_plank_id()
-        else: # Date field is left plank
-            invalid_date_field()
+        elif date_check == -1 or date_check == -2: # Date field is left plank
+            invalid_date_format()
+        elif date_check == -3:
+            invalid_date_month()
+        elif date_check == -4:
+            invalid_date_day()
+        else: # date_check == 5 which means date is in the future
+            invalid_date_future()
         # Pop up for submitted plank
-        if pop_dur != -1 and pop_dur != -2 and plank_id != -1 and self.dateKV.text != "":
+        if pop_dur != -1 and pop_dur != -2 and plank_id != -1 and date_check == 1:
             plank_added_msg(self.dateKV.text, self.plankNameKV.text, pop_dur)
-
-
-
-
 
 
 class WindowManager(ScreenManager):
@@ -173,7 +178,6 @@ def invalidDurationNegative():
     pop.open()
 
 
-
 def invalidDurationString():
     pop = Popup(title="Invalid Duration Value",
                 content=Label(text="At least one of your duration values is not a number. Please try again."),
@@ -183,7 +187,7 @@ def invalidDurationString():
 
 
 def userExists():
-    pop = Popup(title="Invalid New Email",
+    pop = Popup(title="User Already Exists",
                 content=Label(text="User with this email already exists in the database. Please log in."),
                 size_hint=(None, None),
                 size=(400, 400))
@@ -215,15 +219,6 @@ def invalid_plank_id():
     pop.open()
 
 
-def invalid_date_field():
-    pop = Popup(title= "Invalid Date Field",
-                content=Label(text="The data field is invalid or was left blank. "
-                                   "Please udpate and try again."),
-                size_hint=(None, None),
-                size=(500, 200))
-    pop.open()
-
-
 def plank_added_msg(date, plank_type, duration):
     body = "New Plank Added: \n {} \n {} \n {}"
     pop = Popup(title="Success!",
@@ -231,6 +226,40 @@ def plank_added_msg(date, plank_type, duration):
                 size_hint=(None, None),
                 size=(200, 200))
     pop.open()
+
+
+def invalid_date_format():
+    body = "The format of the date you entered was incorrect or missing. \nCorrect format: YYYY-MM-DD."
+    pop = Popup(title="Invalid Date Format",
+                content=Label(text=body),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
+
+def invalid_date_month():
+    pop = Popup(title="Invalid Month Value",
+                content=Label(text="The value entered for month is invalid."),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
+
+def invalid_date_day():
+    pop = Popup(title="Invalid Day Value",
+                content=Label(text="The value entered for day is invalid."),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
+
+def invalid_date_future():
+    pop = Popup(title="Invalid Date",
+                content=Label(text="The date you entered is in the future."),
+                size_hint=(None, None),
+                size=(500, 200))
+    pop.open()
+
 
 
 
