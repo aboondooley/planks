@@ -266,7 +266,7 @@ def invalid_date_future():
 kv = Builder.load_file("my.kv")
 
 sm = WindowManager()
-db = DataBase(host="alieboonvm.lan", user_name="admin", password="plankdb", db="plankdb")
+db = DataBase(host="", user_name="", password="", db="")
 
 screens = [LoginWindow(name="login"), CreateAccountWindow(name="create"), MainWindow(name="main"), EnterPlankWindow(name="plank")]
 
