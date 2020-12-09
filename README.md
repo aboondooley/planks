@@ -1,2 +1,2 @@
 # planks
-An program to log my plank workouts.
+A program to log my plank workouts.
